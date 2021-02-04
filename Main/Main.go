@@ -34,23 +34,16 @@ func main(){
 				arr := arrGenerator(arrSize)
 				sort.Ints(arr)
 				insertTime := time.Now().Format("2006-01-02T15:04:05-0700")
-				fmt.Printf("{%d} {%s} {%d} {%d} {%d} \n", id, insertTime, arr[0], arr[arrSize/2], arr[arrSize-1])
+				fmt.Printf("{Gorutine № %d} {%s} {min %d} {avg %d} {max %d} \n", id, insertTime, arr[0], arr[arrSize/2], arr[arrSize-1])
 			})
 		}
-
 	}
 
 	for i := 0; i < writers; i++ {
 		go work(i)
 	}
-
-
 	wg.Wait()
 	tskQ.DoTasks()
-
-
-
-
 }
 
 func arrGenerator(size int) []int  {
