@@ -2,13 +2,12 @@ package TaskQueue
 
 import (
 	"sync"
-	"time"
 )
 
 type TaskQueue struct {
 	mx sync.RWMutex
 	writers int
-	tasks map[int][]Task
+	tasks sync.Map[int][]Task
 
 }
 
@@ -19,7 +18,6 @@ func NewTaskQueue(writers int) *TaskQueue {
 
 type Task struct {
 	identifier int
-	timeStamp time.Time
 	task func()
 }
 
@@ -29,11 +27,11 @@ func newTask(identifier int, task func()) *Task {
 
 
 func (queue TaskQueue) AddTask (goroutine int,f func()){
+
 	queue.mx.Lock()
 	task := newTask(goroutine, f)
-	queue.mx.Unlock()
-	task.timeStamp = time.Now()
 	queue.tasks[goroutine] = append(queue.tasks[goroutine], *task)
+	queue.mx.Unlock()
 }
 
 func (queue TaskQueue) DoTasks (){
